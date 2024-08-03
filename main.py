@@ -38,12 +38,14 @@ def main():
         'player_1_last_hit_speed':0,
         'player_1_total_player_speed':0,
         'player_1_last_player_speed':0,
+        'player_1_player_distance_covered':0,
 
         'player_2_number_of_hits':0,
         'player_2_total_hit_speed':0,
         'player_2_last_hit_speed':0,
         'player_2_total_player_speed':0,
         'player_2_last_player_speed':0,
+        'player_2_player_distance_covered':0,
     }]
 
     for ball_hit_ind in range(len(ball_hit_frames)-1):
@@ -79,9 +81,12 @@ def main():
         current_player_stats[f'player_{player_hit_ball}_number_of_hits']+=1
         current_player_stats[f'player_{player_hit_ball}_total_hit_speed']+=speed_of_ball_hit
         current_player_stats[f'player_{player_hit_ball}_last_hit_speed']=speed_of_ball_hit
-        current_player_stats[f'player_{player_hit_ball}_total_player_speed']+=speed_of_opponent
-        current_player_stats[f'player_{player_hit_ball}_last_player_speed']=speed_of_opponent
-
+        current_player_stats[f'player_{opponent_player_id}_total_player_speed']+=speed_of_opponent
+        current_player_stats[f'player_{opponent_player_id}_last_player_speed']=speed_of_opponent
+        current_player_stats[f'player_{player_hit_ball}_player_distance_covered']+=distance_covered_by_ball_meters
+        current_player_stats[f'player_{opponent_player_id}_player_distance_covered']+=distance_covered_by_opponent_meters
+        # current_player_stats[f'player_{player_hit_ball}_last_player_speed']=speed_of_opponent
+        
         player_stats_data.append(current_player_stats)
     
     player_stats_data_df=pd.DataFrame(player_stats_data)
@@ -93,10 +98,12 @@ def main():
     player_stats_data_df['player_2_average_hit_speed']=player_stats_data_df['player_2_total_hit_speed']/player_stats_data_df['player_1_number_of_hits']
     player_stats_data_df['player_1_average_player_speed']=player_stats_data_df['player_1_total_player_speed']/player_stats_data_df['player_1_number_of_hits']
     player_stats_data_df['player_2_average_player_speed']=player_stats_data_df['player_2_total_player_speed']/player_stats_data_df['player_2_number_of_hits']
-
+    player_stats_data_df['player_1_total_distance_covered']=player_stats_data_df['player_1_player_distance_covered']
+    player_stats_data_df['player_2_total_distance_covered']=player_stats_data_df['player_2_player_distance_covered']
 
     output_video_frames=player_tracker.draw_bbox(video_frames,player_detections)
     output_video_frames=ball_tracker.draw_boxes(output_video_frames,ball_detections)
+   
     output_video_frames=court_line_detector.draw_keypoints_on_video(output_video_frames,court_keypoints)
 
     output_video_frames=small_court.draw_mini_court(output_video_frames)
@@ -104,9 +111,10 @@ def main():
     output_video_frames=small_court.draw_points_on_mini_court(output_video_frames,ball_mini_court_detections,color=(255,0,0))
 
     output_video_frames=draw_player_stats(output_video_frames,player_stats_data_df)
+   
     for i,frame in enumerate(output_video_frames):
         cv2.putText(frame,f"Frame: {i}",(10,30),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
     
-    save_video(output_video_frames,"output_videos\\output_video.avi")
+    save_video(output_video_frames,"output_videos\\output_video1.avi")
 if __name__ == "__main__":
     main()

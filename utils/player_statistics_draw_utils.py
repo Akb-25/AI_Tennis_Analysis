@@ -7,13 +7,15 @@ def draw_player_stats(output_video_frames,player_stats):
         player_2_hit_speed=row['player_2_last_hit_speed']
         player_1_speed=row['player_1_last_player_speed']
         player_2_speed=row['player_2_last_player_speed']
+        player_1_total_distance=row['player_1_total_distance_covered']
+        player_2_total_distance=row['player_2_total_distance_covered']
 
         avg_player_1_hit_speed=row['player_1_average_hit_speed']
         avg_player_2_hit_speed=row['player_2_average_hit_speed']
         avg_player_1_speed=row['player_1_average_player_speed']
         avg_player_2_speed=row['player_2_average_player_speed']
         frame=output_video_frames[index]
-        player_stats.to_csv("player_data_store.csv")
+        # player_stats.to_csv("player_data_store.csv")
         shapes=np.zeros_like(frame,np.uint8)
         width=350
         height=230
@@ -52,4 +54,9 @@ def draw_player_stats(output_video_frames,player_stats):
         output_video_frames[index] = cv2.putText(output_video_frames[index], text, (start_x+10, start_y+200), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
         text = f"{avg_player_1_speed:.1f} km/h    {avg_player_2_speed:.1f} km/h"
         output_video_frames[index] = cv2.putText(output_video_frames[index], text, (start_x+130, start_y+200), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+        
+        text = "Total Distance Covered"
+        output_video_frames[index] = cv2.putText(output_video_frames[index], text, (start_x+10, start_y+240), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+        text = f"{player_1_total_distance:.1f} m    {player_2_total_distance:.1f} m"
+        output_video_frames[index] = cv2.putText(output_video_frames[index], text, (start_x+130, start_y+240), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
     return output_video_frames

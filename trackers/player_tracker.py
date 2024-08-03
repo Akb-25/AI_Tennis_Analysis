@@ -24,7 +24,7 @@ class PlayerTracker:
             min_distance=float("inf")
             for i in range(0,len(court_keypoints),2):
                 court_keypoint=(court_keypoints[i],court_keypoints[i+1])
-                distance=measure_distance_bw(court_keypoint,center_of_player)
+                distance=measure_distance_bw(center_of_player,court_keypoint)
                 if distance<min_distance:
                     min_distance=distance
             distances.append((id,min_distance))
